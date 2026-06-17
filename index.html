@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>24 Hooks — @versescales</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --black: #0A0A0A;
+      --white: #F5F4F0;
+      --off: #1A1A1A;
+      --mid: #2C2C2C;
+      --rule: #2E2E2E;
+      --muted: #6B6B6B;
+      --accent: #C8A96E;
+      --accent-dim: rgba(200,169,110,0.12);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--black);
+      color: var(--white);
+      font-family: 'Inter', sans-serif;
+      font-size: 16px;
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100svh;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 0 6vw 10vh;
+      border-bottom: 1px solid var(--rule);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 70% 60% at 80% 20%, rgba(200,169,110,0.07) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-eyebrow {
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 2rem;
+    }
+
+    .hero-title {
+      font-family: 'DM Serif Display', Georgia, serif;
+      font-size: clamp(2.8rem, 8vw, 6.5rem);
+      line-height: 1.02;
+      font-weight: 400;
+      max-width: 16ch;
+      margin-bottom: 2.5rem;
+    }
+
+    .hero-title em {
+      font-style: italic;
+      color: var(--accent);
+    }
+
+    .hero-sub {
+      font-size: clamp(0.95rem, 1.4vw, 1.1rem);
+      color: var(--muted);
+      max-width: 52ch;
+      font-weight: 300;
+      margin-bottom: 3.5rem;
+      line-height: 1.8;
+    }
+
+    .hero-meta {
+      font-size: 12px;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+    }
+
+    .hero-meta a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    /* ── SECTION WRAPPER ── */
+    .section {
+      padding: 8vh 6vw;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .section-label {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 3rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--rule);
+      max-width: 6rem;
+    }
+
+    /* ── INTRO ── */
+    .intro-title {
+      font-family: 'DM Serif Display', Georgia, serif;
+      font-size: clamp(1.8rem, 4vw, 3rem);
+      line-height: 1.15;
+      margin-bottom: 2rem;
+      max-width: 22ch;
+    }
+
+    .intro-body {
+      color: #C0BFBB;
+      font-size: clamp(0.95rem, 1.3vw, 1.05rem);
+      max-width: 60ch;
+      margin-bottom: 1.5rem;
+      font-weight: 300;
+      line-height: 1.8;
+    }
+
+    .pull-quote {
+      margin: 3rem 0;
+      padding: 2rem 2.5rem;
+      border-left: 3px solid var(--accent);
+      background: var(--accent-dim);
+      font-family: 'DM Serif Display', Georgia, serif;
+      font-size: clamp(1.1rem, 2.2vw, 1.5rem);
+      font-style: italic;
+      color: var(--white);
+      line-height: 1.4;
+    }
+
+    /* ── HOW TO USE ── */
+    .how-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1px;
+      background: var(--rule);
+      border: 1px solid var(--rule);
+      margin-top: 2.5rem;
+    }
+
+    .how-card {
+      background: var(--off);
+      padding: 2rem 1.8rem;
+    }
+
+    .how-card-num {
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1rem;
+      font-weight: 600;
+    }
+
+    .how-card-title {
+      font-family: 'DM Serif Display', Georgia, serif;
+      font-size: 1.3rem;
+      margin-bottom: 0.8rem;
+    }
+
+    .how-card-body {
+      font-size: 0.88rem;
+      color: #8A8880;
+      font-weight: 300;
+      line-height: 1.75;
+    }
+
+    .rule-line {
+      font-size: 0.85rem;
+      color: var(--muted);
+      font-weight: 300;
+      border-top: 1px solid var(--rule);
+      padding-top: 1.5rem;
+      margin-top: 2.5rem;
+    }
+
+    .rule-line strong {
+      color: var(--accent);
+      font-weight: 500;
+    }
+
+    /* ── HOOK SECTION HEADER ── */
+    .hook-section-title {
+      font-family: 'DM Serif Display', Georgia, serif;
+      font-size: clamp(1.5rem, 3vw, 2.4rem);
+      line-height: 1.15;
+      margin-bottom: 0.6rem;
+      max-width: 28ch;
+    }
+
+    .hook-section-sub {
+      color: var(--muted);
+      font-size: 0.9rem;
+      font-weight: 300;
+      max-width: 52ch;
+      margin-bottom: 3rem;
+    }
+
+    /* ── HOOK CARDS ── */
+    .hooks-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      border: 1px solid var(--rule);
+    }
+
+    .hook-item {
+      display: grid;
+      grid-template-columns: 100px 1fr;
+      gap: 0;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .hook-item:last-child {
+      border-bottom: none;
+    }
+
+    .hook-num-col {
+      background: var(--off);
+      padding: 2.2rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: flex-start;
+      border-right: 1px solid var(--rule);
+    }
+
+    .hook-num {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+    }
+
+    .hook-body-col {
+      background: var(--black);
+      padding: 2.2rem 2.4rem;
+    }
+
+    .hook-title {
+      font-family: 'DM Serif Display', Georgia, serif;
+      font-size: 1.15rem;
+      margin-bottom: 1.4rem;
+      color: var(--white);
+    }
+
+    .hook-row {
+      margin-bottom: 1rem;
+    }
+
+    .hook-row:last-child {
+      margin-bottom: 0;
+    }
+
+    .hook-row-label {
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.35rem;
+    }
+
+    .hook-row-text {
+      font-size: 0.88rem;
+      color: #C0BFBB;
+      font-weight: 300;
+      line-height: 1.75;
+      max-width: 72ch;
+    }
+
+    .hook-row-text.example {
+      font-style: italic;
+      color: #A8A6A1;
+      padding: 0.8rem 1rem;
+      background: var(--off);
+      border-left: 2px solid var(--rule);
+    }
+
+    .hook-row-text.tip {
+      color: #6B6966;
+      font-size: 0.82rem;
+    }
+
+    /* ── AUDIO SPECIAL: sound badge ── */
+    .sound-badge {
+      display: inline-block;
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--black);
+      background: var(--accent);
+      padding: 0.2rem 0.55rem;
+      margin-bottom: 1.2rem;
+    }
+
+    /* ── FINAL RULE ── */
+    .final-body {
+      font-size: clamp(0.95rem, 1.4vw, 1.05rem);
+      color: #C0BFBB;
+      max-width: 62ch;
+      font-weight: 300;
+      line-height: 1.8;
+      margin-bottom: 1.5rem;
+    }
+
+    .final-line {
+      font-family: 'DM Serif Display', Georgia, serif;
+      font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+      color: var(--white);
+      font-style: italic;
+      margin-top: 2rem;
+    }
+
+    /* ── CTA ── */
+    .cta-section {
+      padding: 10vh 6vw;
+      text-align: center;
+    }
+
+    .cta-title {
+      font-family: 'DM Serif Display', Georgia, serif;
+      font-size: clamp(2rem, 6vw, 4.5rem);
+      line-height: 1.08;
+      margin-bottom: 1.5rem;
+    }
+
+    .cta-title em {
+      font-style: italic;
+      color: var(--accent);
+    }
+
+    .cta-body {
+      font-size: clamp(0.9rem, 1.3vw, 1rem);
+      color: var(--muted);
+      max-width: 46ch;
+      margin: 0 auto 2.5rem;
+      font-weight: 300;
+    }
+
+    .cta-handle {
+      display: inline-block;
+      font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+      color: var(--accent);
+      font-family: 'DM Serif Display', Georgia, serif;
+      font-style: italic;
+      text-decoration: none;
+      border-bottom: 1px solid var(--accent);
+      padding-bottom: 2px;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      padding: 2.5rem 6vw;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .footer-brand {
+      font-family: 'DM Serif Display', Georgia, serif;
+      font-size: 1rem;
+      color: var(--white);
+    }
+
+    .footer-meta {
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+    }
+
+    /* ── MOBILE ── */
+    @media (max-width: 640px) {
+      .hook-item { grid-template-columns: 1fr; }
+      .hook-num-col { border-right: none; border-bottom: 1px solid var(--rule); padding: 1.2rem 1.5rem; flex-direction: row; align-items: center; }
+      .hero { padding: 0 5vw 8vh; }
+      .section { padding: 6vh 5vw; }
+      footer { flex-direction: column; align-items: flex-start; }
+      .how-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HERO -->
+  <section class="hero">
+    <p class="hero-eyebrow">@versescales — Versatile Raf Scales (VRS)</p>
+    <h1 class="hero-title">24 hooks that <em>stop the scroll</em> before you say a word.</h1>
+    <p class="hero-sub">Verbal. Visual. Audio. Text. The four-layer hook system behind 1 billion organic views — broken down into frameworks you can use in your next video.</p>
+    <p class="hero-meta">Based on the video you watched — <a href="https://instagram.com/versescales" target="_blank">@versescales</a></p>
+  </section>
+
+  <!-- 00 HOW TO USE -->
+  <section class="section">
+    <p class="section-label">00 — How To Use This</p>
+    <h2 class="intro-title">Every hook is a framework. Not a script.</h2>
+    <p class="intro-body">Fill in the brackets with your specific niche, result, or story. The more specific you are, the harder it hits. A generic hook gets generic results.</p>
+    <p class="intro-body">For every video you film, pick one from each category — then make sure all four match in energy. A heavy topic needs heavy audio. A curiosity visual needs a curiosity text overlay. That alignment is what makes people stop. The mismatch is why they don't.</p>
+    <blockquote class="pull-quote">"Lock the hook before you film anything else. The first 5 seconds aren't the intro — they're the entire argument for why someone should stay."</blockquote>
+    <div class="how-grid">
+      <div class="how-card">
+        <p class="how-card-num">Layer 01</p>
+        <h3 class="how-card-title">Verbal</h3>
+        <p class="how-card-body">What you say in the first 5 seconds. The spoken pattern interrupt that earns the next 10.</p>
+      </div>
+      <div class="how-card">
+        <p class="how-card-num">Layer 02</p>
+        <h3 class="how-card-title">Visual</h3>
+        <p class="how-card-body">What the viewer sees before you open your mouth. Movement, angle, entry — the eye stops before the brain does.</p>
+      </div>
+      <div class="how-card">
+        <p class="how-card-num">Layer 03</p>
+        <h3 class="how-card-title">Audio</h3>
+        <p class="how-card-body">The sound layer that makes everything land harder. Most creators ignore this. That's the gap.</p>
+      </div>
+      <div class="how-card">
+        <p class="how-card-num">Layer 04</p>
+        <h3 class="how-card-title">Text</h3>
+        <p class="how-card-body">The overlay that reinforces, adds tension, or creates a second hook running parallel to what you're saying.</p>
+      </div>
+    </div>
+    <p class="rule-line"><strong>The rule:</strong> All four layers must be congruent in energy. Heavy topic = heavy audio + dark visual + tension text. Miss one and you lose them.</p>
+  </section>
+
+  <!-- 01 VERBAL HOOKS -->
+  <section class="section">
+    <p class="section-label">01 — Verbal Hooks</p>
+    <h2 class="hook-section-title">What you say in the first 5 seconds.</h2>
+    <p class="hook-section-sub">The spoken pattern interrupt. This is the only hook most creators think about — which means getting all four right is already a competitive advantage.</p>
+
+    <div class="hooks-list">
+
+      <div class="hook-item">
+        <div class="hook-num-col"><span class="hook-num">V — 01</span></div>
+        <div class="hook-body-col">
+          <p class="hook-title">The Countdown Promise</p>
+          <div class="hook-row">
+            <p class="hook-row-label">Framework</p>
+            <p class="hook-row-text">In [timeframe], I'm going to show you exactly how to [specific outcome] — and you won't need [common objection].</p>
+          </div>
+          <div class="hook-row">
+            <p class="hook-row-label">Example</p>
+            <p class="hook-row-text example">"In 60 seconds I'm going to show you exactly how to get your first DM from a stranger — and you won't need to run a single ad."</p>
+          </div>
+          <div class="hook-row">
+            <p class="hook-row-label">Why it works</p>
+            <p class="hook-row-text tip">The timeframe creates urgency. The objection removal kills the skip instinct before it fires.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="hook-item">
+        <div class="hook-num-col"><span class="hook-num">V — 02</span></div>
+        <div class="hook-body-col">
+          <p class="hook-title">The Confession Opener</p>
+          <div class="hook-row">
+            <p class="hook-row-label">Framework</p>
+            <p class="hook-row-text">I used to [embarrassing belief or action] — until I realized [paradigm shift].</p>
+          </div>
+          <div class="hook-row">
+            <p class="hook-row-label">Example</p>
+            <p class="hook-row-text example">"I used to post every single day for 4 months straight — until I realized I was building an audience that would never buy anything."</p>
+          </div>
+          <div class="hook-row">
+            <p class="hook-row-label">Why it works</p>
+            <p class="hook-row-text tip">Confession = instant relatability. The shift earns authority without a credential drop.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="hook-item">
+        <div class="hook-num-col"><span class="hook-num">V — 03</span></div>
+        <div class="hook-body-col">
+          <p class="hook-title">The Specific Number Drop</p>
+          <div class="hook-row">
+            <p class="hook-row-label">Framework</p>
+            <p class="hook-row-text">I [did specific action] for [exact timeframe] and got [exact result] — here's the one thing that changed everything.</p>
+          </div>
+          <div class="hook-row">
+            <p class="hook-row-label">Example</p>
+            <p class="hook-row-text example">"I posted 37 videos in 90 days and got 11 paying clients — here's the one thing that changed everything."</p>
+          </div>
+          <div class="hook-row">
+            <p class="hook-row-label">Why it works</p>
+            <p class="hook-row-text tip">Odd numbers feel real. Round numbers feel made up. Always use specific, odd numbers.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="hook-item">
+        <div class="hook-num-col"><span class="hook-num">V — 04</span></div>
+        <div class="hook-body-col">
+          <p class="hook-title">The Mid-Thought Entry</p>
+          <div class="hook-row">
+            <p class="hook-row-label">Framework</p>
+            <p class="hook-row-text">— and that's the part nobody talks about. [Continue the fake mid-conversation topic immediately.]</p>
+          </div>
+          <div class="hook-row">
+            <p class="hook-row-label">Example</p>
+            <p class="hook-row-text example">"— and that's the part nobody talks about. Your content isn't failing because it's bad. It's failing because it's invisible."</p>
+          </div>
+          <div class="hook-row">
+            <p class="hook-row-label">Why it works</p>
+            <p class="hook-row-text tip">The dash signals you dropped in mid-scene. No intro. No greeting. Pure pattern interrupt.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="hook-item">
+        <div class="hook-num-col"><span class="hook-num">V — 05</span></div>
+        <div class="hook-body-col">
+          <p class="hook-title">The Contrarian Cold Open</p>
+          <div class="hook-row">
+            <p class="hook-row-label">Framework</p>
+            <p class="hook-row-text">Stop [widely accepted advice]. It's actually making your [problem] worse.</p>
+          </div>
+          <div class="hook-row">
+            <p class="hook-row-label">Example</p>
+            <p class="hook-row-text example">"Stop posting more content. It's actually making your account grow slower."</p>
+          </div>
+          <div class="hook-row">
+            <p class="hook-row-label">Why it works</p>
+            <p class="hook-row-text tip">Disagreement in the first word creates cognitive dissonance. They have to stay to find out why.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="hook-item">
+        <div class="hook-num-col"><span class="hook-num">V — 06</span></div>
+        <div class="hook-body-col">
+          <p class="hook-title">The Direct Address Warning</p>
+          <div class="hook-row">
+            <p class="hook-row-label">Framework</p>
+            <p class="hook-row-text">If you're [specific situation], do NOT [common action] until you watch this.</p>
+          </div>
+          <div class="hook-row">
+            <p class="hook-row-label">Example</p>
+            <p class="hook-row-text example">"If you're a business owner posting content and it's not bringing you leads, do NOT hire a content team until you watch this."</p>
+          </div>
+          <div class="hook-row">
+            <p class="hook-row-label">Why it works</p>
+            <p class="hook-row-text tip">Specificity in the "if" filters the right viewer — and makes everyone else feel like they're eavesdropping, which also makes them stay.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- 02 VISUAL HOOKS -->
+  <section class="section">
+    <p class="section-label">02 — Visual Hooks</p>
+    <h2 class="hook-section-title">What they see before you say anything.</h2>
+    <p class="hook-section-sub">The eye stops before the brain does. If the first frame doesn't earn a second look, the spoken hook never gets heard.</p>
+
+    <div class="hooks-list">
+
+      <div class="hook-item">
+        <div class="hook-num-col"><span class="hook-num">VIS — 01</span></div>
+        <div class="hook-body-col">
+          <p class="hook-title">Slide Into Frame</p>
+          <div class="hook-row">
+            <p class="hook-row-label">Setup</p>
+            <p class="hook-row-text">Static camera already rolling on an empty background. You glide in sideways from off-screen — no entrance warning. Text overlay fires as your body fully enters.</p>
+          </div>
+          <div class="hook-row">
+            <p class="hook-row-label">The move</p>
+            <p class="hook-row-text example">Hold a small flexible tripod as you slide in. It signals intentionality — this wasn't accidental, this was set up.</p>
+          </div>
+          <div class="hook-row">
+            <p class="hook-row-label">Why it works</p>
+            <p class="hook-row-text tip">The unexpected lateral movement registers as an event. Viewer stops to figure out what just happened.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="hook-item">
+        <div class="hook-num-col"><span class="hook-num">VIS — 02</span></div>
+        <div class="hook-body-col">
+          <p class="hook-title">Pick Up The Camera</p>
+          <div class="hook-row">
+            <p class="hook-row-label">Setup</p>
+            <p class="hook-row-text">Camera rests face-up on a surface. Shot starts on the ceiling. Your hand drops into frame, grabs the camera, and tilts it upward to reveal your face mid-motion.</p>
+          </div>
+          <div class="hook-row">
+            <p class="hook-row-label">The move</p>
+            <p class="hook-row-text example">As the camera reaches eye level, stare directly into the lens. Don't smile yet. Let the tension sit for half a second before your text fires.</p>
+          </div>
+          <div class="hook-row">
+            <p class="hook-row-label">Why it works</p>
+            <p class="hook-row-text tip">The camera becoming the subject — then flipping to reveal you — forces the brain to recalibrate. That recalibration is watch time.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="hook-item">
+        <div class="hook-num-col"><span class="hook-num">VIS — 03</span></div>
+        <div class="hook-body-col">
+          <p class="hook-title">Camera Interruption</p>
+          <div class="hook-row">
+            <p class="hook-row-label">Setup</p>
+            <p class="hook-row-text">Shot opens completely black — covered by your palm. You pull your hand away to reveal yourself already mid-expression, mid-gesture.</p>
+          </div>
+          <div class="hook-row">
+            <p class="hook-row-label">The move</p>
+            <p class="hook-row-text example">When the hand lifts, be already reacting — eyebrow raised, body leaning slightly in, hand gesturing. You're mid-sentence, not starting one.</p>
+          </div>
+          <div class="hook-row">
+            <p class="hook-row-label">Why it works</p>
+            <p class="hook-row-text tip">A black reveal feels like a cut, not a start. The viewer thinks they missed something and stays to catch up.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="hook-item">
+        <div class="hook-num-col"><span class="hook-num">VIS — 04</span></div>
+        <div class="hook-body-col">
+          <p class="hook-title">Setting The Camera Down</p>
+          <div class="hook-row">
+            <p class="hook-row-label">Setup</p>
+            <p class="hook-row-text">You're holding the camera close — tight on your face. You step forward, set it down on a surface deliberately, step back. The full environment reveals itself.</p>
+          </div>
+          <div class="hook-row">
+            <p class="hook-row-label">The move</p>
+            <p class="hook-row-text example">After stepping back, adjust your jacket or posture — as if you're preparing to say something worth hearing. Text fires right as you settle.</p>
+          </div>
+          <div class="hook-row">
+            <p class="hook-row-label">Why it works</p>
+            <p class="hook-row-text tip">Deliberate setup signals: what I'm about to say required preparation. That framing alone buys you 5 more seconds.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="hook-item">
+        <div class="hook-num-col"><span class="hook-num">VIS — 05</span></div>
+        <div class="hook-body-col">
+          <p class="hook-title">Entering The Frame</p>
+          <div class="hook-row">
+            <p class="hook-row-label">Setup</p>
+            <p class="hook-row-text">Frame starts completely empty — just the environment. You walk in calmly from the right and sit down, as if you didn't know the camera was rolling.</p>
+          </div>
+          <div class="hook-row">
+            <p class="hook-row-label">The move</p>
+            <p class="hook-row-text example">Once seated, bring your hands together in front of you. Don't rush into the hook. Let the stillness sit for one beat — then speak.</p>
+          </div>
+          <div class="hook-row">
+            <p class="hook-row-label">Why it works</p>
+            <p class="hook-row-text tip">The empty frame creates anticipation. The viewer is already leaning in before you appear. You start with the room's attention, not fighting for it.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="hook-item">
+        <div class="hook-num-col"><span class="hook-num">VIS — 06</span></div>
+        <div class="hook-body-col">
+          <p class="hook-title">Low Level Shot</p>
+          <div class="hook-row">
+            <p class="hook-row-label">Setup</p>
+            <p class="hook-row-text">Camera on the floor, framed under furniture legs — wide shot with the furniture's underside in the foreground. You're lying flat, staring directly into the lens.</p>
+          </div>
+          <div class="hook-row">
+            <p class="hook-row-label">The move</p>
+            <p class="hook-row-text example">Hold a small tripod setup while on your stomach. The framing should make the viewer tilt their head slightly — that confusion is the hook doing its job.</p>
+          </div>
+          <div class="hook-row">
+            <p class="hook-row-label">Why it works</p>
+            <p class="hook-row-text tip">Unconventional angles break the visual pattern that every talking-head video creates. If it looks different, it gets watched.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- 03 AUDIO HOOKS -->
+  <section class="section">
+    <p class="section-label">03 — Audio Hooks</p>
+    <h2 class="hook-section-title">What they hear — the layer most creators skip.</h2>
+    <p class="hook-section-sub">Sound is subconscious. Viewers don't notice good audio — they feel it. These are the specific sound moves behind high-retention reels.</p>
+
+    <div class="hooks-list">
+
+      <div class="hook-item">
+        <div class="hook-num-col"><span class="hook-num">A — 01</span></div>
+        <div class="hook-body-col">
+          <p class="sound-badge">Sound: Dead Silence</p>
+          <p class="hook-title">The Hard Stop Drop</p>
+          <div class="hook-row">
+            <p class="hook-row-label">How to use</p>
+            <p class="hook-row-text">Cut to complete silence for 0.5–1 full second right before your most important line. No fade — instant cut to nothing.</p>
+          </div>
+          <div class="hook-row">
+            <p class="hook-row-label">Example</p>
+            <p class="hook-row-text example">Music running at full energy. Instant silence. Then: "Your content is costing you clients every single day." Music returns.</p>
+          </div>
+          <div class="hook-row">
+            <p class="hook-row-label">Why it works</p>
+            <p class="hook-row-text tip">Silence is the loudest sound on a scroll feed. One second of nothing stops thumbs better than any bass drop.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="hook-item">
+        <div class="hook-num-col"><span class="hook-num">A — 02</span></div>
+        <div class="hook-body-col">
+          <p class="sound-badge">Sound: Riser / Ascending Tone</p>
+          <p class="hook-title">The Riser + Reveal</p>
+          <div class="hook-row">
+            <p class="hook-row-label">How to use</p>
+            <p class="hook-row-text">A building, ascending white-noise or tonal riser for 2–3 seconds — peaks exactly as your face reveals or your first word drops.</p>
+          </div>
+          <div class="hook-row">
+            <p class="hook-row-label">Example</p>
+            <p class="hook-row-text example">Black screen or blurred shot. Riser builds for 2 seconds. Hard cut to your face. First word spoken immediately.</p>
+          </div>
+          <div class="hook-row">
+            <p class="hook-row-label">Why it works</p>
+            <p class="hook-row-text tip">Rising sound is physiologically attention-grabbing. The brain is wired to stay alert to rising tones — it signals something is about to happen.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="hook-item">
+        <div class="hook-num-col"><span class="hook-num">A — 03</span></div>
+        <div class="hook-body-col">
+          <p class="sound-badge">Sound: Whoosh SFX</p>
+          <p class="hook-title">The Whoosh Transition Cut</p>
+          <div class="hook-row">
+            <p class="hook-row-label">How to use</p>
+            <p class="hook-row-text">A fast whoosh sound effect timed precisely to every scene cut in the first 5–7 seconds. One per cut.</p>
+          </div>
+          <div class="hook-row">
+            <p class="hook-row-label">Example</p>
+            <p class="hook-row-text example">Whoosh on the cut from title card to your face. Whoosh again on the B-roll cut. Keeps the pace kinetic even with no voiceover.</p>
+          </div>
+          <div class="hook-row">
+            <p class="hook-row-label">Why it works</p>
+            <p class="hook-row-text tip">Whoosh sounds register as motion even when the cut is static. Standard cuts feel cinematic. Viewer's brain reads it as fast-paced and worth staying in.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="hook-item">
+        <div class="hook-num-col"><span class="hook-num">A — 04</span></div>
+        <div class="hook-body-col">
+          <p class="sound-badge">Sound: Sparkle / Chime / Magic Reveal</p>
+          <p class="hook-title">The Magic Reveal Chime</p>
+          <div class="hook-row">
+            <p class="hook-row-label">How to use</p>
+            <p class="hook-row-text">A soft sparkle, shimmer, or chime timed to the exact moment key text or a key visual appears on screen.</p>
+          </div>
+          <div class="hook-row">
+            <p class="hook-row-label">Example</p>
+            <p class="hook-row-text example">You deliver your hook line. Pause. Chime plays as the text overlay fades in: "The Care Currency System." Silence. Continue.</p>
+          </div>
+          <div class="hook-row">
+            <p class="hook-row-label">Why it works</p>
+            <p class="hook-row-text tip">The chime trains the eye to read the text. It's an auditory cue that something worth seeing just appeared. Viewer doesn't skip because their attention was directed.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="hook-item">
+        <div class="hook-num-col"><span class="hook-num">A — 05</span></div>
+        <div class="hook-body-col">
+          <p class="sound-badge">Sound: Dark Sting / Low Drone</p>
+          <p class="hook-title">The Negative Tension Sting</p>
+          <div class="hook-row">
+            <p class="hook-row-label">How to use</p>
+            <p class="hook-row-text">A single dark, dissonant low-frequency sting or drone hit timed to a pain-point statement. One hit. Then silence.</p>
+          </div>
+          <div class="hook-row">
+            <p class="hook-row-label">Example</p>
+            <p class="hook-row-text example">Music running. You say: "Your content is getting views but not making money." Low sting hits. Beat of silence. Music returns. Continue.</p>
+          </div>
+          <div class="hook-row">
+            <p class="hook-row-label">Why it works</p>
+            <p class="hook-row-text tip">Negative audio cues make pain feel real. Viewer doesn't hear the sting consciously — they just feel the weight of the line. That weight keeps them watching.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="hook-item">
+        <div class="hook-num-col"><span class="hook-num">A — 06</span></div>
+        <div class="hook-body-col">
+          <p class="sound-badge">Sound: Crowd Murmur / Reaction Audio</p>
+          <p class="hook-title">The Social Proof Ambience</p>
+          <div class="hook-row">
+            <p class="hook-row-label">How to use</p>
+            <p class="hook-row-text">Layer faint crowd noise, ambient reaction audio, or social validation sounds under your opening line or B-roll — not the music, underneath it.</p>
+          </div>
+          <div class="hook-row">
+            <p class="hook-row-label">Example</p>
+            <p class="hook-row-text example">You walk into frame. Faint crowd murmur underneath. Text: "12 million people watched this post." Crowd fades. Silence. Your hook drops.</p>
+          </div>
+          <div class="hook-row">
+            <p class="hook-row-label">Why it works</p>
+            <p class="hook-row-text tip">Social proof isn't just visual. Hearing a crowd response before you've said anything positions you as someone already known — not trying to be.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- 04 TEXT HOOKS -->
+  <section class="section">
+    <p class="section-label">04 — Text Hooks</p>
+    <h2 class="hook-section-title">The overlay running parallel to everything else.</h2>
+    <p class="hook-section-sub">Text hooks aren't captions on your video. They're a second hook — running at the same time as your verbal, creating tension the viewer has to resolve.</p>
+
+    <div class="hooks-list">
+
+      <div class="hook-item">
+        <div class="hook-num-col"><span class="hook-num">T — 01</span></div>
+        <div class="hook-body-col">
+          <p class="hook-title">The Contradiction</p>
+          <div class="hook-row">
+            <p class="hook-row-label">Framework</p>
+            <p class="hook-row-text">Line 1: [Widely accepted belief]. Line 2: [Hard contradiction]. No explanation yet — let it sit.</p>
+          </div>
+          <div class="hook-row">
+            <p class="hook-row-label">Example</p>
+            <p class="hook-row-text example">"More content = more growth." / "Wrong. Here's what actually does."</p>
+          </div>
+          <div class="hook-row">
+            <p class="hook-row-label">Why it works</p>
+            <p class="hook-row-text tip">Two-line format creates a visual tension break. Reader can't scroll past unresolved contradiction.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="hook-item">
+        <div class="hook-num-col"><span class="hook-num">T — 02</span></div>
+        <div class="hook-body-col">
+          <p class="hook-title">The Specific Data Claim</p>
+          <div class="hook-row">
+            <p class="hook-row-label">Framework</p>
+            <p class="hook-row-text">[Exact number] [specific people/accounts] are making [specific mistake] right now.</p>
+          </div>
+          <div class="hook-row">
+            <p class="hook-row-label">Example</p>
+            <p class="hook-row-text example">"9 out of 10 business owners posting daily are doing it wrong. Here's which one you are."</p>
+          </div>
+          <div class="hook-row">
+            <p class="hook-row-label">Why it works</p>
+            <p class="hook-row-text tip">Data in a text overlay reads as evidence, not opinion. Even skeptical viewers stay to find out if they're the exception.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="hook-item">
+        <div class="hook-num-col"><span class="hook-num">T — 03</span></div>
+        <div class="hook-body-col">
+          <p class="hook-title">The Identity Challenge</p>
+          <div class="hook-row">
+            <p class="hook-row-label">Framework</p>
+            <p class="hook-row-text">You think you're a [label]. You're actually a [reframe].</p>
+          </div>
+          <div class="hook-row">
+            <p class="hook-row-label">Example</p>
+            <p class="hook-row-text example">"You think you're a content creator. You're actually a salesperson with bad packaging."</p>
+          </div>
+          <div class="hook-row">
+            <p class="hook-row-label">Why it works</p>
+            <p class="hook-row-text tip">Identity challenges are impossible to scroll past. Every viewer checks whether it applies to them — that's 3 extra seconds minimum.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="hook-item">
+        <div class="hook-num-col"><span class="hook-num">T — 04</span></div>
+        <div class="hook-body-col">
+          <p class="hook-title">The Countdown List Tease</p>
+          <div class="hook-row">
+            <p class="hook-row-label">Framework</p>
+            <p class="hook-row-text">[Number] things that are silently [negative outcome] your [result]. #[number] is the one nobody talks about.</p>
+          </div>
+          <div class="hook-row">
+            <p class="hook-row-label">Example</p>
+            <p class="hook-row-text example">"5 things quietly killing your conversion rate. #3 is the one nobody talks about."</p>
+          </div>
+          <div class="hook-row">
+            <p class="hook-row-label">Why it works</p>
+            <p class="hook-row-text tip">The buried promise forces them to watch through the list. Retention spike mid-video when you finally reach the one that matters.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="hook-item">
+        <div class="hook-num-col"><span class="hook-num">T — 05</span></div>
+        <div class="hook-body-col">
+          <p class="hook-title">The "If You Are" Filter</p>
+          <div class="hook-row">
+            <p class="hook-row-label">Framework</p>
+            <p class="hook-row-text">If you're [hyper-specific situation] and you're still doing [common mistake] — this is for you.</p>
+          </div>
+          <div class="hook-row">
+            <p class="hook-row-label">Example</p>
+            <p class="hook-row-text example">"If you're making $10K a month offline and your Instagram still looks like a hobby — this is for you."</p>
+          </div>
+          <div class="hook-row">
+            <p class="hook-row-label">Why it works</p>
+            <p class="hook-row-text tip">Hyper-specific "if" statements feel personally written. Your ICP thinks you read their journal. Everyone else watches out of curiosity.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="hook-item">
+        <div class="hook-num-col"><span class="hook-num">T — 06</span></div>
+        <div class="hook-body-col">
+          <p class="hook-title">The Timeframe Ultimatum</p>
+          <div class="hook-row">
+            <p class="hook-row-label">Framework</p>
+            <p class="hook-row-text">In [short timeframe], your [thing] is either working for you or working against you. Here's how to tell.</p>
+          </div>
+          <div class="hook-row">
+            <p class="hook-row-label">Example</p>
+            <p class="hook-row-text example">"In the next 30 seconds, your Instagram page is either attracting your next client or repelling them. Here's how to tell."</p>
+          </div>
+          <div class="hook-row">
+            <p class="hook-row-label">Why it works</p>
+            <p class="hook-row-text tip">The clock creates stakes. Urgency in the text overlay makes swiping away feel like a loss the viewer actively chooses.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- FINAL RULE -->
+  <section class="section">
+    <p class="section-label">Final Rule</p>
+    <h2 class="intro-title">Your hook is a promise.</h2>
+    <p class="final-body">Whatever you tease in the first 5 seconds — the video has to deliver on it. A great hook attached to weak content trains your audience not to trust you. They stop once. They don't come back.</p>
+    <p class="final-body">A great hook attached to real value trains them to stop every single time your face appears. That's how you build an audience that buys. Not by posting more. By making the first 5 seconds earn the next 55.</p>
+    <blockquote class="pull-quote">"Pick your hook. Film with intention. Let the content close."</blockquote>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <h2 class="cta-title">Want me to audit your <em>hook strategy?</em></h2>
+    <p class="cta-body">Send me your last 3 reels. I'll tell you exactly what's costing you watch time and what to fix first. No pitch. Real diagnosis.</p>
+    <a class="cta-handle" href="https://instagram.com/versescales" target="_blank">DM me — @versescales</a>
+  </section>
+
+  <footer>
+    <span class="footer-brand">24 Hooks — Verses Universe</span>
+    <span class="footer-meta">Verse Nation Enterprises LLC &nbsp;·&nbsp; @versescales &nbsp;·&nbsp; @versesuniversee</span>
+  </footer>
+
+</body>
+</html>
